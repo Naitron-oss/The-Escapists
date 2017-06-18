@@ -2,6 +2,7 @@
 const fetch = require('node-fetch');
 const express = require('express');
 const app = express();
+const api = require('./routes/api');
 
 // disable express powered by header
 app.disable('x-powered-by');
@@ -10,11 +11,7 @@ app.set('port', process.env.PORT || 3000);
 
 app.use(express.static(__dirname + '/public'));
 
-const studios = require('./db/seeds/seed_data');
-
-app.get('/api/studios', (req, res) => {
-  res.json(studios);
-});
+app.use('/api', api);
 
 // 404 catch-all handler (middleware)
 app.use(function (req, res, next) {
