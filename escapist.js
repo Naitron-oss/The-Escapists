@@ -1,3 +1,4 @@
+'use strict';
 const fetch = require('node-fetch');
 const express = require('express');
 const app = express();
@@ -9,7 +10,7 @@ app.set('port', process.env.PORT || 3000);
 
 app.use(express.static(__dirname + '/public'));
 
-const studios = require('./datas/studios');
+const studios = require('./db/seeds/seed_data');
 
 app.get('/api/studios', (req, res) => {
   res.json(studios);
