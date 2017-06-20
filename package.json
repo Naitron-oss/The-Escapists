@@ -5,6 +5,7 @@
   "main": "escapist.js",
   "scripts": {
     "start": "knex migrate:latest && node escapist.js",
+    "start-dev": "knex migrate:latest && knex seed:run && nodemon escapist.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": {
@@ -26,5 +27,8 @@
     "morgan": "^1.8.2",
     "node-fetch": "^1.7.1",
     "pg": "^6.2.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0"
   }
 }
