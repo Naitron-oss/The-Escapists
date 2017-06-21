@@ -1,17 +1,19 @@
 'use strict';
 const fetch = require('node-fetch');
 const express = require('express');
+const port = process.env.PORT || 3000;
 const app = express();
 const api = require('./routes/api');
 
 // disable express powered by header
 app.disable('x-powered-by');
 
-app.set('port', process.env.PORT || 3000);
+app.set('port', port);
 
 app.use(express.static(__dirname + '/public'));
 
-app.use('/api', api);
+// Routes =====================================================
+require('./routes')(app, passport);
 
 // 404 catch-all handler (middleware)
 app.use(function (req, res, next) {
