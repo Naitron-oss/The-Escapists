@@ -46,7 +46,7 @@ function gameAttributes(locationId, game) {
     name: game.name,
     slug: game.slug,
     description: game.description,
-    story: game.address,
+    story: game.story,
     link: game.link,
     player_quantity: game.player_quantity,
     price: game.price,
