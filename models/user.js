@@ -1,5 +1,14 @@
 const knex = require('../db/knex');
 const bcrypt = require('bcrypt-nodejs');
+const jwt = require('jwt-simple');
+
+exports.tokenForUser = function (user) {
+  const timestamp = new Date().getTime();
+  return jwt.encode({
+    sub: user.id,
+    iat: timestamp,
+  }, process.env.APP_SECRET);
+}
 
 function encryptPassword(password, next) {
   return bcrypt.hashSync(password, bcrypt.genSaltSync(10), null)
@@ -30,5 +39,5 @@ exports.createUser = function (email, password) {
     password_digest: encryptPassword(password),
     created_at: new Date(),
     updated_at: new Date(),
-  });
+  }).returning('*');
 }

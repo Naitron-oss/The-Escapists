@@ -1,5 +1,4 @@
 'use strict';
-const knex = require('../db/knex');
 const User = require('../models/user');
 
 exports.createUser = function createUser(req, res, next) {
@@ -21,8 +20,8 @@ exports.createUser = function createUser(req, res, next) {
 
       } else {
 
-        User.createUser(email, password).then(() => {
-          res.json({ success: true });
+        User.createUser(email, password).then((rows) => {
+          res.json({ token: User.tokenForUser(rows[0]) });
         }).catch((error) => {
           return next(error);
         });
