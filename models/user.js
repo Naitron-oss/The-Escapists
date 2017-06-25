@@ -42,4 +42,13 @@ userClass.validator = (attributes) => {
   return errors;
 }
 
+userClass.prototype.generateToken = () => {
+  let timestamp = new Date().getTime();
+
+  return jwt.encode({
+    sub: this.id,
+    iat: timestamp
+  }, process.env.APP_SECRET);
+}
+
 module.exports = userClass;
