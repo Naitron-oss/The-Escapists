@@ -1,43 +1,45 @@
-const knex = require('../db/knex');
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
 const bcrypt = require('bcrypt-nodejs');
 const jwt = require('jwt-simple');
 
-exports.tokenForUser = function (user) {
-  const timestamp = new Date().getTime();
-  return jwt.encode({
-    sub: user.id,
-    iat: timestamp,
-  }, process.env.APP_SECRET);
-}
+const userSchema = new Schema({
+  email: { type: String, unique: true, lowercase: true },
+  password: { type: String }
+});
 
-function encryptPassword(password, next) {
-  return bcrypt.hashSync(password, bcrypt.genSaltSync(10), null)
-}
+// https://stackoverflow.com/questions/39166700/the-this-object-is-empty-in-presave
+// Not to use ES6 arrow syntax in before hook
+userSchema.pre('save', function(next) {
+  const user = this;
 
-exports.validateUserAttributes = function (params) {
-  let errors = {};
+  bcrypt.genSalt(10, (err, salt) => {
+    if (err) { return next(err); }
 
-  const { email, password } = params;
+    bcrypt.hash(user.password, salt, null, (err, hash) => {
+      if (err) { return next(err); }
+      console.log('hash: ', hash);
+      user.password = hash;
+      next();
+    });
+  });
+});
 
-  if (email === undefined || email.length === 0) { errors.email = 'email is required' }
-  if (password === undefined || password.length === 0) { errors.password = 'password is required' }
+const userClass = mongoose.model('user', userSchema);
+
+userClass.validator = (attributes) => {
+  const email = attributes.email,
+        password = attributes.password
+
+  let errors = []
+
+  if (!email || email.length == 0) { errors.push('Email is requried'); }
+  if (!password || password.length == 0) { errors.push('Password is requried'); }
+
+  if (password && password.length > 0 && password.length < 8) { errors.push('Password is too short'); }
 
   return errors;
 }
 
-exports.queryUsersby = function (options) {
-  return knex.select('*').table('users').where(options).whereNull('deleted_at').then(rows => rows);
-}
-
-exports.queryUsersbyEmail = function (email) {
-  return knex.select('*').table('users').whereRaw('LOWER("email") = ?', email).whereNull('deleted_at').then(rows => rows);
-}
-
-exports.createUser = function (email, password) {
-  return knex.table('users').insert({
-    email: email,
-    password_digest: encryptPassword(password),
-    created_at: new Date(),
-    updated_at: new Date(),
-  }).returning('*');
-}
+module.exports = userClass;

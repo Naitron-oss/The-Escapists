@@ -9,6 +9,9 @@ const passport = require('passport');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 
+const mongoose = require('mongoose');
+mongoose.connect(process.env.MONGODB_URI);
+
 const app = express();
 
 // disable express powered by header
@@ -17,7 +20,7 @@ app.disable('x-powered-by');
 app.set('port', port);
 
 app.use(morgan(process.env.NODE_ENV || 'dev'));
-app.use(bodyParser.json());
+app.use(bodyParser.json({ type: '*/*' }));
 app.use(bodyParser.urlencoded({
   extended: true
 }));

@@ -2,34 +2,22 @@
 const User = require('../models/user');
 
 exports.createUser = function createUser(req, res, next) {
+  const errors = User.validator(req.body);
+  if (errors.length > 0) { return res.status(422).json({ errors }); }
+
   const { email, password } = req.body;
 
-  let errors = User.validateUserAttributes(req.body);
+  User.findOne({ email: email.toLowerCase() }, (err, existingUser) => {
+    if (err) { return next(err); }
 
-  if (Object.keys(errors).length > 0) {
+    if (existingUser) { res.status(422).json({ errors: ['Email is in use'] }); }
 
-    res.status(422).json({ errors });
+    const user = new User({ email, password });
 
-  } else {
+    user.save((err) => {
+      if (err) { return next(err); }
 
-    User.queryUsersbyEmail(email.toLowerCase()).then((rows) => {
-
-      if (rows.length > 0) {
-
-        res.status(422).json({ errors: { email: 'email is in use' } });
-
-      } else {
-
-        User.createUser(email, password).then((rows) => {
-          res.json({ token: User.tokenForUser(rows[0]) });
-        }).catch((error) => {
-          return next(error);
-        });
-
-      }
-
-    }).catch((error) => {
-      return next(error);
-    });
-  }
+      res.json({ success: true });
+    })
+  });
 }
