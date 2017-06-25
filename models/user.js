@@ -51,4 +51,12 @@ userClass.generateToken = (user) => {
   }, process.env.APP_SECRET);
 }
 
+userClass.comparePassword = function (user, candidatePassword, callback) {
+  bcrypt.compare(candidatePassword, user.password, (err, isMatch) => {
+    if (err) { return callback(err); }
+
+    callback(null, isMatch);
+  });
+};
+
 module.exports = userClass;
