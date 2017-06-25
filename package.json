@@ -4,8 +4,8 @@
   "description": "App for escapist",
   "main": "escapist.js",
   "scripts": {
-    "start": "knex migrate:latest && node escapist.js",
-    "start-dev": "knex migrate:latest && knex seed:run && nodemon escapist.js",
+    "start": "node escapist.js",
+    "dev": "nodemon escapist.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": {
@@ -19,17 +19,20 @@
   },
   "license": "MIT",
   "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.17.2",
-    "bookshelf": "^0.10.3",
-    "ejs": "^2.5.6",
+    "dotenv": "^4.0.0",
     "express": "^4.15.3",
-    "knex": "^0.13.0",
-    "locus": "^2.0.1",
+    "jwt-simple": "^0.5.1",
+    "mongoose": "^4.10.8",
     "morgan": "^1.8.2",
     "node-fetch": "^1.7.1",
-    "pg": "^6.2.4"
+    "passport": "^0.3.2",
+    "passport-jwt": "^2.2.1",
+    "passport-local": "^1.0.0"
   },
   "devDependencies": {
+    "locus": "^2.0.1",
     "nodemon": "^1.11.0"
   }
 }

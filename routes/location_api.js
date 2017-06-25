@@ -1,14 +1,9 @@
+'use strict';
 const express = require('express');
-const knex = require('../db/knex');
 const locationAPI = express.Router();
+const locationsController = require('../controllers/locations_controller');
 
-locationAPI.get('/locations', (req, res) => {
-  knex.select('id', 'address', 'phone_numbers', 'longitude', 'latitude', 'name', 'description', 'studio_id')
-    .table('locations')
-    .where({ active: true })
-    .then(function (locations) {
-      res.json(locations);
-  });
-});
+locationAPI.route('/locations')
+  .get(locationsController.getLocations)
 
 module.exports = locationAPI;
