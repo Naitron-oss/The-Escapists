@@ -4,7 +4,7 @@
   "description": "App for escapist",
   "main": "escapist.js",
   "scripts": {
-    "start": "node escapist.js",
+    "start": "md-seed run && node escapist.js",
     "dev": "nodemon escapist.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -25,6 +25,7 @@
     "express": "^4.15.3",
     "jwt-simple": "^0.5.1",
     "mongoose": "^4.10.8",
+    "mongoose-data-seed": "^1.0.0",
     "morgan": "^1.8.2",
     "node-fetch": "^1.7.1",
     "passport": "^0.3.2",
