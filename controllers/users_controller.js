@@ -17,7 +17,7 @@ exports.createUser = function createUser(req, res, next) {
     user.save((err) => {
       if (err) { return next(err); }
 
-      res.json({ token: user.generateToken() });
+      res.json({ token: User.generateToken(user) });
     })
   });
 }

@@ -7,15 +7,22 @@ const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 
 const JwtOptions = {
-
+  jwtFromRequest: ExtractJwt.fromHeader('authorization'),
+  secretOrKey: process.env.APP_SECRET
 };
 
 const JwtLogin = new JwtStrategy(JwtOptions, (payload, done) => {
-  User.queryUsersby({ id: payload.sub }).then((rows) => {
-    if (rows.length == 0) {
-      done(null, false);
+  User.findById(payload.sub, (err, user) => {
+    if (err) { return done(err, false); }
+
+    if (user) {
+      done(null, user);
     } else {
-      done(null, row[0]);
+      done(null, false);
     }
-  }).catch((error) => { return done(error, false); });
+  });
 });
+
+passport.use(JwtLogin);
+
+exports.isAuthenticated = passport.authenticate('jwt', { session: false });
