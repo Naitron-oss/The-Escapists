@@ -3,6 +3,7 @@ require('dotenv').config();
 
 const mongooseLib = require('mongoose');
 const Users = require('./seeders/users.seeder');
+const Studios = require('./seeders/studios.seeder');
 
 mongooseLib.Promise = global.Promise || Promise;
 
@@ -19,4 +20,5 @@ exports.mongoURL = process.env.MONGODB_URI;
 */
 exports.seedersList = {
   Users,
+  Studios
 };
