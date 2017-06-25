@@ -1,23 +1,34 @@
 'use strict';
 require('dotenv').config();
 
-var Seeder = require('mongoose-data-seed').Seeder;
-var Model = require('../models/user');
+const mongoose = require('mongoose');
+mongoose.connect(process.env.MONGODB_URI);
 
-var data = [{
-  email: process.env.ADMIN_EMAIL,
-  password: process.env.ADMIN_PASSWORD,
-  createdAt: new Date().getTime(),
-  isAdmin: true
-}];
+const User = require('../models/user');
 
-var UsersSeeder = Seeder.extend({
-  shouldRun: function () {
-    return Model.count().exec().then(count => count === 0);
-  },
-  run: function () {
-    return Model.create(data);
+const data = [
+  {
+    email: process.env.ADMIN_EMAIL,
+    password: process.env.ADMIN_PASSWORD,
+    isAdmin: true,
+    createdAt: new Date().getTime()
   }
-});
+]
 
-module.exports = UsersSeeder;
+exports.seed = function () {
+  return data.forEach((data) => {
+    User.findOne({ email: data.email }, (err, existingUser) => {
+      if (err) { throw err; }
+
+      if (existingUser) { return existingUser }
+
+      const user = new User(data);
+
+      user.save((err) => {
+        if (err) { return next(err); }
+
+        return user;
+      })
+    });
+  });
+}

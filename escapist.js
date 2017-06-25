@@ -12,6 +12,9 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 mongoose.connect(process.env.MONGODB_URI);
 
+const Seeder = require('./seeders');
+Seeder.seed();
+
 const app = express();
 
 // disable express powered by header
