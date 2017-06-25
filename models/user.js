@@ -6,7 +6,10 @@ const jwt = require('jwt-simple');
 
 const userSchema = new Schema({
   email: { type: String, unique: true, lowercase: true },
-  password: { type: String }
+  createdAt: { type: Date },
+  updatedAt: { type: Date },
+  password: { type: String },
+  isAdmin: { type: Boolean, default: false }
 });
 
 // https://stackoverflow.com/questions/39166700/the-this-object-is-empty-in-presave
@@ -19,11 +22,18 @@ userSchema.pre('save', function(next) {
 
     bcrypt.hash(user.password, salt, null, (err, hash) => {
       if (err) { return next(err); }
-      console.log('hash: ', hash);
       user.password = hash;
+      user.updatedAt = new Date().getTime();
       next();
     });
   });
+});
+
+userSchema.pre('save', function (next) {
+  const user = this;
+
+  user.updatedAt = new Date().getTime();
+  next();
 });
 
 const userClass = mongoose.model('user', userSchema);
