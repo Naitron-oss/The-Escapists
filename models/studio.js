@@ -8,15 +8,7 @@ const studioSchema = new Schema({
   name: { type: String },
   description: { type: String },
   slug: { type: String, unique: true, lowercase: true },
-  links: Schema.Types.Mixed,
-  locations: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Location'
-  }],
-  games: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Game'
-  }]
+  links: Schema.Types.Mixed
 });
 
 const studioClass = mongoose.model('studio', studioSchema);

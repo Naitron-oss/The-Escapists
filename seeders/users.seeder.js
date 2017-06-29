@@ -6,7 +6,7 @@ mongoose.connect(process.env.MONGODB_URI);
 
 const User = require('../models/user');
 
-const data = [
+const datas = [
   {
     email: process.env.ADMIN_EMAIL,
     password: process.env.ADMIN_PASSWORD,
@@ -16,19 +16,11 @@ const data = [
 ]
 
 exports.seed = function () {
-  return data.forEach((data) => {
-    User.findOne({ email: data.email }, (err, existingUser) => {
+  return datas.forEach((data) => {
+    User.findOneAndUpdate({ email: data.email }, data, { upsert: true } , (err, existingUser) => {
       if (err) { throw err; }
 
       if (existingUser) { return existingUser }
-
-      const user = new User(data);
-
-      user.save((err) => {
-        if (err) { return next(err); }
-
-        return user;
-      })
     });
   });
 }

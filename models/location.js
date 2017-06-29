@@ -14,13 +14,7 @@ const locationSchema = new Schema({
   ownedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Studio'
-  },
-  games: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Game'
-    }
-  ]
+  }
 });
 
 const locationClass = mongoose.model('location', locationSchema);

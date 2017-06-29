@@ -12,81 +12,58 @@ const data = require('./seed_data');
 
 exports.seed = function () {
   return data.forEach((studio_data) => {
-    Studio.findOne({ slug: studio_data.slug }, (err, existingStudio) => {
+    let studio = {
+      active: studio_data.active,
+      name: studio_data.name,
+      slug: studio_data.slug,
+      description: studio_data.description,
+      createdAt: new Date().getTime(),
+      links: studio_data.links
+    };
+
+    Studio.findOneAndUpdate({ slug: studio_data.slug }, studio, { upsert: true, new: true }, (err, savedStudio) => {
       if (err) { throw err; }
 
-      if (existingStudio) { return existingStudio }
+      return studio_data.locations.forEach((location_data) => {
+        let location = {
+          active: location_data.active,
+          name: location_data.name,
+          description: location_data.description,
+          createdAt: new Date().getTime(),
+          address: location_data.address,
+          phone_numbers: location_data.phone_numbers,
+          longitude: location_data.longitude.toString(),
+          latitude: location_data.latitude.toString(),
+          ownedBy: savedStudio._id
+        };
 
-      const studio = new Studio({
-        active: studio_data.active,
-        name: studio_data.name,
-        slug: studio_data.slug,
-        description: studio_data.description,
-        createdAt: new Date().getTime(),
-        links: studio_data.links
-      });
+        Location.findOneAndUpdate({ name: location_data.name }, location, { upsert: true, new: true }, (err, savedLocation) => {
+          if (err) { throw err; }
 
-      studio.save((err) => {
-        if (err) { return next(err); }
-
-        return studio_data.locations.forEach((location_data) => {
-          Location.findOne({ name: location_data.name }, (err, existingLocation) => {
-            if (err) { throw err; }
-
-            if (existingLocation) { return existingLocation }
-            const location = new Location({
-              active: location_data.active,
-              name: location_data.name,
-              description: location_data.description,
+          return location_data.games.forEach((game_data) => {
+            let game = {
+              active: game_data.active,
+              name: game_data.name,
+              description: game_data.description,
               createdAt: new Date().getTime(),
-              address: location_data.address,
-              phone_numbers: location_data.phone_numbers,
-              longitude: location_data.longitude.toString(),
-              latitude: location_data.latitude.toString(),
-              ownedBy: studio._id
+              slug: game_data.slug,
+              story: game_data.story,
+              link: game_data.link,
+              player_quantity: game_data.player_quantity,
+              price: game_data.price,
+              available_preservation: game_data.available_preservation,
+              ownedBy: savedStudio._id,
+              locatedAt: savedLocation._id,
+            };
+
+            Game.findOneAndUpdate({ slug: game_data.slug }, game, { upsert: true, new: true }, (err, savedGame) => {
+              if (err) { throw err; }
+
+              return savedGame;
             });
-
-            location.save((err) => {
-              if (err) { return next(err); }
-
-              studio.locations.push(location._id);
-              studio.save();
-
-              return location_data.games.forEach((game_data) => {
-                Game.findOne({ slug: game_data.slug }, (err, existingGame) => {
-                  if (err) { throw err; }
-
-                  if (existingGame) { return existingGame }
-                  const game = new Game({
-                    active: game_data.active,
-                    name: game_data.name,
-                    description: game_data.description,
-                    createdAt: new Date().getTime(),
-                    slug: game_data.slug,
-                    story: game_data.story,
-                    link: game_data.link,
-                    player_quantity: game_data.player_quantity,
-                    price: game_data.price,
-                    available_preservation: game_data.available_preservation,
-                    ownedBy: studio._id,
-                    locatedAt: location._id,
-                  });
-
-                  game.save((err) => {
-                    if (err) { return next(err); }
-
-                    studio.games.push(game._id);
-                    studio.save();
-                    location.games.push(game._id);
-                    location.save();
-                    return game;
-                  })
-                });
-              });
-            })
           });
         });
-      })
+      });
     });
   });
 }
