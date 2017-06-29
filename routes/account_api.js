@@ -7,6 +7,11 @@ const passport = require('passport');
 const passportService = require('../services/passport');
 const requireLocalAuth = passport.authenticate('local', { session: false });
 
+const usersController = require('../controllers/users_controller');
+
+accountAPI.route('/sign_up')
+  .post(usersController.createUser)
+
 accountAPI.route('/sign_in')
   .post(requireLocalAuth, accountsController.signIn)
 

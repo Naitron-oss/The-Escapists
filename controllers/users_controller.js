@@ -13,6 +13,7 @@ exports.createUser = function createUser(req, res, next) {
     if (existingUser) { res.status(422).json({ errors: ['Email is in use'] }); }
 
     const user = new User({ email, password });
+    user.createdAt = new Date().getTime();
 
     user.save((err) => {
       if (err) { return next(err); }
