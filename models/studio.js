@@ -18,4 +18,14 @@ studioSchema.pre('save', function (next) {
   next();
 });
 
+studioClass.queryByArgs = function (query, callback) {
+  let filter = {};
+
+  ['name', 'description', 'slug'].forEach((key) => {
+    if (query[key] !== undefined) { filter[key] = new RegExp(query[key], 'ig'); }
+  });
+
+  studioClass.find(filter).exec(callback);
+}
+
 module.exports = studioClass;
