@@ -1,10 +1,15 @@
 'use strict';
-const Game = require('../models/game');
+const Studio = require('../models/studio');
 
 exports.getGames = function (req, res, next) {
-  Game.find().exec((err, games) => {
-    if (err) { return next(err); }
+  Studio.find().select('games').exec((err, studios) => {
+    if (err) { res.status(500).json(err); }
 
-    res.json(games);
+    if (studios.length > 0) {
+      res.json(studios);
+    } else {
+      res.status(404).json({ errors: ['Not Found'] });
+    }
   });
 }
+
