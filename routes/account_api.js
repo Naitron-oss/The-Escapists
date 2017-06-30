@@ -6,6 +6,7 @@ const accountsController = require('../controllers/accounts_controller');
 const passport = require('passport');
 const passportService = require('../services/passport');
 const requireLocalAuth = passport.authenticate('local', { session: false });
+const requireJwtAuth = passport.authenticate('jwt', { session: false });
 
 const usersController = require('../controllers/users_controller');
 
