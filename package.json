@@ -4,7 +4,7 @@
   "description": "App for escapist",
   "main": "escapist.js",
   "scripts": {
-    "start": "md-seed run && node escapist.js",
+    "start": "node escapist.js",
     "dev": "nodemon escapist.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
