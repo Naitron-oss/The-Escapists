@@ -1,14 +1,9 @@
+'use strict';
 const express = require('express');
-const knex = require('../db/knex');
 const gameAPI = express.Router();
+const gamesController = require('../controllers/games_controller');
 
-gameAPI.get('/games', (req, res) => {
-  knex.select()
-    .table('games')
-    .where({ active: true })
-    .then(function (locations) {
-      res.json(locations);
-  });
-});
+gameAPI.route('/games')
+  .get(gamesController.getGames)
 
 module.exports = gameAPI;
