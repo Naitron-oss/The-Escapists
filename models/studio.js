@@ -1,6 +1,22 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+const gameSchema = new Schema({
+  active: { type: Boolean, default: true },
+  name: { type: String },
+  slug: { type: String, unique: true, lowercase: true },
+  description: { type: String },
+  story: { type: String },
+  link: { type: String },
+  player_quantity: { type: String },
+  price: { type: String },
+  available_preservation: { type: String },
+  address: { type: String },
+  phone_numbers: { type: [String] },
+  longitude: { type: String },
+  latitude: { type: String }
+});
+
 const studioSchema = new Schema({
   createdAt: { type: Date },
   updatedAt: { type: Date },
@@ -9,23 +25,7 @@ const studioSchema = new Schema({
   description: { type: String },
   slug: { type: String, unique: true, lowercase: true },
   links: Schema.Types.Mixed,
-  games: [
-    {
-      active: { type: Boolean, default: true },
-      name: { type: String },
-      slug: { type: String, unique: true, lowercase: true },
-      description: { type: String },
-      story: { type: String },
-      link: { type: String },
-      player_quantity: { type: String },
-      price: { type: String },
-      available_preservation: { type: String },
-      address: { type: String },
-      phone_numbers: { type: [String] },
-      longitude: { type: String },
-      latitude: { type: String }
-    }
-  ]
+  games: [gameSchema]
 });
 
 const studioClass = mongoose.model('studio', studioSchema);
