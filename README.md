@@ -10,6 +10,25 @@ GET /api/v1/studios // get studio lists from DB
 GET /api/v1/games // get game lists from DB
 ```
 
+## User Registration and JWT authentication:
+
+```
+POST /api/v1/sign_up
+
+{
+  email: String,
+  password: String
+}
+
+POST /api/v1/sign_in
+
+{
+  email: String,
+  password: String
+}
+
+```
+
 ## TODO:
 
 - User can vote up / down on games
